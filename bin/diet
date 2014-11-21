@@ -124,9 +124,7 @@ diet() {
       if echo "$FILES_REFERENCE" | grep -x -q "$FILE_TARGET";then
         continue
       fi
-
       test -f "$FILE_TARGET" || continue
-
       rm -f "$FILE_TARGET"
       echo "${PREFIX_REMOVE_LOG} $FILE_TARGET"
     done
