@@ -1,0 +1,177 @@
+#!/usr/bin/env bash
+
+VERSION="0.0.1"
+TARGET=
+REFERENCE=
+DIRS_REFERENCE=
+DIRS_TARGET=
+FILES_REFERENCE=
+FILES_TARGET=
+FILES_AND_DIRS_TARGET=
+FILES_AND_DIRS_REFERENCE=
+TMP=
+DRYRUN=0
+CHECK=0
+PREFIX_REMOVE_LOG="Remove:"
+
+#
+# Output usage information.
+#
+usage() {
+  cat <<-EOF
+
+  Usage: diet [command] [options] <target dir> <reference dir>
+
+  Options:
+    -n, --dryrun         show what would have been removed
+    -V, --version        output program version
+    -h, --help           output help information
+
+  Commands:
+    check                show diff
+EOF
+}
+
+#
+# Output version.
+#
+version() {
+  echo $VERSION
+}
+
+#
+# Abort with <msg>
+#
+abort() {
+  echo
+  echo "  $@" 1>&2
+  echo
+  exit 1
+}
+
+#
+# back to previous directory
+#
+cd_pwd() {
+  cd - > /dev/null 2>&1
+}
+
+#
+# initialize
+#
+initialize() {
+  if ! test -d "$REFERENCE" || ! test -d "$TARGET"; then
+    abort "invalid argument"
+  fi
+
+  # TARGET
+  cd "$TARGET"
+  FILES_AND_DIRS_TARGET=$(find . ! -path .)
+  test -z "$FILES_AND_DIRS_TARGET" && abort "target directory is empty"
+  DIRS_TARGET=$(find . ! -path . -type d)
+  FILES_TARGET=$(find . -type f)
+  cd_pwd
+
+  # REFERENCE
+  cd "$REFERENCE"
+  FILES_AND_DIRS_REFERENCE=$(find . ! -path .)
+  test -z "$FILES_AND_DIRS_REFERENCE" && abort "reference directory is empty"
+  DIRS_REFERENCE=$(find . ! -path . -type d)
+  FILES_REFERENCE=$(find . -type f)
+  cd_pwd
+}
+
+#
+# setup_tmp
+#
+setup_tmp() {
+  TMP="$(mktemp -d 2>/dev/null || mktemp -d -t diet 2>/dev/null || echo '/var/tmp/diet')"
+  test -d "$TMP" || mkdir -p "$TMP"
+  cd "$TMP"
+  test -z "$DIRS_TARGET" || mkdir -p $DIRS_TARGET
+  test -z "$FILES_TARGET" || touch $FILES_TARGET
+  cd_pwd
+}
+
+#
+# diet
+#
+diet() {
+  # cd to $TARGET or $TMP
+  if test $DRYRUN -eq 1; then
+    cd "$TMP"
+  else
+    cd "$TARGET"
+  fi
+
+  # diet directories
+  if test -n "$DIRS_TARGET"; then
+    for DIR_TARGET in $DIRS_TARGET; do
+      if echo "$DIRS_REFERENCE" | grep -x -q "$DIR_TARGET"; then
+        continue
+      fi
+      test -d "$DIR_TARGET" || continue
+      rm -rf "$DIR_TARGET"
+      echo "${PREFIX_REMOVE_LOG} $DIR_TARGET"
+    done
+    # update FILES_TARGET
+    FILES_TARGET=$(find . -type f)
+  fi
+
+  # diet files
+  if test -n "$FILES_TARGET"; then
+    for FILE_TARGET in $FILES_TARGET; do
+      if echo "$FILES_REFERENCE" | grep -x -q "$FILE_TARGET";then
+        continue
+      fi
+
+      test -f "$FILE_TARGET" || continue
+
+      rm -f "$FILE_TARGET"
+      echo "${PREFIX_REMOVE_LOG} $FILE_TARGET"
+    done
+  fi
+
+  if test -d "$TMP"; then
+    rm -rf "$TMP"
+  fi
+}
+
+#
+# show diff
+#
+check() {
+  diff -u <(echo "$FILES_AND_DIRS_TARGET") <(echo "$FILES_AND_DIRS_REFERENCE")
+}
+
+# parse argv
+while test $# -ne 0; do
+  arg=$1; shift
+  case $arg in
+    -h|--help) usage; exit ;;
+    -V|--version) version; exit ;;
+    -n|--dryrun) DRYRUN=1 ;;
+    check) CHECK=1 ;;
+    *)
+      if test -z "$TARGET"; then
+        TARGET=$arg;
+      elif test -z "$REFERENCE"; then
+        REFERENCE=$arg;
+      fi
+      ;;
+  esac
+done
+
+initialize
+
+if test $CHECK -eq 1; then
+  check
+  exit 0
+fi
+
+if test $DRYRUN -eq 1; then
+  setup_tmp
+  PREFIX_REMOVE_LOG="Would Remove:"
+fi
+
+diet
