@@ -1,6 +1,44 @@
 # diet
 
-Delete files in A directroy which names do not exist in B directry.  
+Delete files in *target* directroy which names do not exist in *reference* directry.  
+
+## sample
+
+**target directory**  
+.  
+├── css  
+│   └── index.css  
+├── images  
+│   ├── gendou.gif  
+│   └── shinji.jpg  
+└── index.html  
+
+2 directories, 4 files  
+
+**reference directory**  
+.  
+├── images  
+│   └── shinji.jpg  
+├── index.html  
+└── top.html  
+
+1 directory, 3 files  
+
+**run command**  
+
+```
+$ diet target reference
+Remove: ./css
+Remove: ./images/gendou.gif
+```
+
+**target directory**  
+.  
+├── images  
+│   └── shinji.jpg  
+└── index.html  
+
+1 directory, 2 files  
 
 ## Usage
 
