@@ -2,7 +2,7 @@
 
 Delete files in *target* directroy which names do not exist in *reference* directry.  
 
-## sample
+## Sample
 
 **target directory**  
 .  
