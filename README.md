@@ -2,6 +2,8 @@
 
 Delete files in A directroy which names do not exist in B directry.  
 
+## Usage
+
 ```
   Usage: diet [command] [options] <target dir> <reference dir>
   Options:
