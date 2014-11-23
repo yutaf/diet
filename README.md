@@ -4,38 +4,39 @@ Delete files in *target* directroy which names do not exist in *reference* direc
 
 ## Sample
 
-**target directory**  
-.  
+**BEFORE**  
+
+target  
 ├── css  
-│   └── index.css  
+│   └── style.css  
 ├── images  
-│   ├── gendou.gif  
-│   └── shinji.jpg  
-└── index.html  
-
-2 directories, 4 files  
-
-**reference directory**  
-.  
-├── images  
-│   └── shinji.jpg  
+│   └── main.jpg  
 ├── index.html  
 └── top.html  
 
+2 directories, 4 files  
+
+reference  
+├── css  
+│   └── style.css  
+├── index.html  
+└── terms.html  
+
 1 directory, 3 files  
 
-**run command**  
+**RUN COMMAND**  
 
 ```
 $ diet target reference
-Remove: ./css
-Remove: ./images/gendou.gif
+Remove: ./images
+Remove: ./top.html
 ```
 
-**target directory**  
-.  
-├── images  
-│   └── shinji.jpg  
+**AFTER**  
+
+target  
+├── css  
+│   └── style.css  
 └── index.html  
 
 1 directory, 2 files  
