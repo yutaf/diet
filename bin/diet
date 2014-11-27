@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.0.1"
+VERSION="0.0.2"
 TARGET=
 REFERENCE=
 DIRS_REFERENCE=
@@ -94,6 +94,18 @@ setup_tmp() {
 }
 
 #
+# show diff
+#
+check() {
+  diff -u <(echo "$FILES_TARGET") <(echo "$FILES_REFERENCE") | awk '/^[+-][^+-]/ {
+    if($0 ~ /^\+/)
+      print "\033[32m" $0 "\033[m"
+    else
+      print "\033[31m" $0 "\033[m"
+  }'
+}
+
+#
 # diet
 #
 diet() {
@@ -133,13 +145,6 @@ diet() {
   if test -d "$TMP"; then
     rm -rf "$TMP"
   fi
-}
-
-#
-# show diff
-#
-check() {
-  diff -u <(echo "$FILES_AND_DIRS_TARGET") <(echo "$FILES_AND_DIRS_REFERENCE")
 }
 
 # parse argv
