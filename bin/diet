@@ -23,9 +23,9 @@ usage() {
   Usage: diet [command] [options] <target dir> <reference dir>
 
   Options:
-    -n, --dry-run         show what would have been removed
     -V, --version        output program version
     -h, --help           output help information
+    -n, --dry-run        show what would have been removed
 
   Commands:
     check                show diff
