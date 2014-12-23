@@ -23,7 +23,7 @@ usage() {
   Usage: diet [command] [options] <target dir> <reference dir>
 
   Options:
-    -n, --dryrun         show what would have been removed
+    -n, --dry-run         show what would have been removed
     -V, --version        output program version
     -h, --help           output help information
 
@@ -151,7 +151,7 @@ while test $# -ne 0; do
   case $arg in
     -h|--help) usage; exit ;;
     -V|--version) version; exit ;;
-    -n|--dryrun) DRYRUN=1 ;;
+    -n|--dry-run) DRYRUN=1 ;;
     check) CHECK=1 ;;
     *)
       if test -z "$TARGET"; then
