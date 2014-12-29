@@ -142,7 +142,9 @@ diet() {
     done
   fi
 
-  test -d "$TMP" && rm -rf "$TMP"
+  if test -d "$TMP"; then
+    rm -rf "$TMP"
+  fi
 }
 
 # parse argv
