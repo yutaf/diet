@@ -1,6 +1,6 @@
 # diet
 
-Delete files in *target* directroy which names do not exist in *reference* directry.  
+Delete files in *target* directory which names do not exist in *reference* directory.
 
 ## Sample
 
