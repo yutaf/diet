@@ -85,9 +85,9 @@ initialize() {
 # setup_tmp
 #
 setup_tmp() {
-  TMP="$(mktemp -d 2>/dev/null || mktemp -d -t $$ 2>/dev/null || echo /var/tmp/$$)"
-  test -d "$TMP" || mkdir -p "$TMP"
-  cd "$TMP"
+  TMP="$(mktemp -u 2>/dev/null || mktemp -u -t $$ 2>/dev/null || echo /var/tmp/$$)"
+  mkdir -p $TMP
+  cd $TMP
   test -z "$DIRS_TARGET" || mkdir -p $DIRS_TARGET
   test -z "$FILES_TARGET" || touch $FILES_TARGET
   cd_pwd
